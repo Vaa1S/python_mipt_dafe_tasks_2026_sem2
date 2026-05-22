@@ -21,7 +21,7 @@ def get_projections_components(
         return None, None
 
     scalar_products = matrix @ vector
-    squared_norms = np.sum(matrix ** 2, axis=1)
+    squared_norms = np.sum(matrix**2, axis=1)
     coefficients = scalar_products / squared_norms
 
     projections = coefficients[:, np.newaxis] * matrix

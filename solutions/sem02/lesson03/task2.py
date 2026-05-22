@@ -28,8 +28,8 @@ def convert_to_sphere(
     if abscissa.shape != ordinates.shape or abscissa.shape != applicates.shape:
         raise ShapeMismatchError
 
-    distances = np.sqrt(abscissa ** 2 + ordinates ** 2 + applicates ** 2)
+    distances = np.sqrt(abscissa**2 + ordinates**2 + applicates**2)
     azimuth = np.arctan2(ordinates, abscissa)
-    inclination = np.arctan2(np.sqrt(abscissa ** 2 + ordinates ** 2), applicates)
+    inclination = np.arctan2(np.sqrt(abscissa**2 + ordinates**2), applicates)
 
     return distances, azimuth, inclination

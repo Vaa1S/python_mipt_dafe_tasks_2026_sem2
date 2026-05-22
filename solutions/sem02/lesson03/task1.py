@@ -16,7 +16,7 @@ def sum_arrays_vectorized(
 
 
 def compute_poly_vectorized(abscissa: np.ndarray) -> np.ndarray:
-    return 3 * abscissa ** 2 + 2 * abscissa + 1
+    return 3 * abscissa**2 + 2 * abscissa + 1
 
 
 def get_mutual_l2_distances_vectorized(
@@ -28,4 +28,4 @@ def get_mutual_l2_distances_vectorized(
 
     diff = lhs[:, np.newaxis, :] - rhs[np.newaxis, :, :]
 
-    return np.sqrt(np.sum(diff ** 2, axis=-1))
+    return np.sqrt(np.sum(diff**2, axis=-1))

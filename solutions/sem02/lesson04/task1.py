@@ -9,7 +9,7 @@ def pad_image(image: np.ndarray, pad_size: int) -> np.ndarray:
     new_shape = (height + 2 * pad_size, width + 2 * pad_size) + image.shape[2:]
 
     padded = np.zeros(new_shape, dtype=image.dtype)
-    padded[pad_size:pad_size + height, pad_size:pad_size + width] = image
+    padded[pad_size : pad_size + height, pad_size : pad_size + width] = image
 
     return padded
 
@@ -32,9 +32,9 @@ def blur_image(
 
     for di in range(kernel_size):
         for dj in range(kernel_size):
-            accumulator += padded[di:di + height, dj:dj + width]
+            accumulator += padded[di : di + height, dj : dj + width]
 
-    result = accumulator / (kernel_size ** 2)
+    result = accumulator / (kernel_size**2)
 
     return result.astype(image.dtype)
 
