@@ -6,17 +6,21 @@ def get_dominant_color_info(
     threshold: int = 5,
 ) -> tuple[np.uint8, float]:
     if threshold < 1:
-        raise ValueError
+        raise ValueError("threshold must be positive")
 
-    flat = image.flatten()
-    total = flat.size
+    total = image.size
+    histogram = np.bincount(image.flatten(), minlength=256)
 
-    counts = np.zeros(256, dtype=np.int64)
-    for color in range(256):
-        diff = np.abs(flat.astype(np.int64) - color)
-        counts[color] = np.sum(diff < threshold)
+    cumulative = np.concatenate(([0], np.cumsum(histogram)))
 
-    most_common = np.argmax(counts)
-    percent = counts[most_common] / total * 100
+    colors = np.arange(256)
+    left = np.maximum(0, colors - threshold + 1)
+    right = np.minimum(256, colors + threshold)
 
-    return np.uint8(most_common), percent
+    counts = cumulative[right] - cumulative[left]
+    counts[histogram == 0] = -1
+
+    dominant_color = np.argmax(counts)
+    percent = counts[dominant_color] / total * 100
+
+    return np.uint8(dominant_color), percent

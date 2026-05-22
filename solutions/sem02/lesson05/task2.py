@@ -20,15 +20,11 @@ def get_projections_components(
     if np.linalg.matrix_rank(matrix) != n:
         return None, None
 
-    projections = np.zeros((n, n), dtype=float)
-    components = np.zeros((n, n), dtype=float)
+    scalar_products = matrix @ vector
+    squared_norms = np.sum(matrix ** 2, axis=1)
+    coefficients = scalar_products / squared_norms
 
-    for i in range(n):
-        basis_vector = matrix[i]
-        scalar = np.sum(vector * basis_vector)
-        norm_squared = np.sum(basis_vector * basis_vector)
-        projection = scalar / norm_squared * basis_vector
-        projections[i] = projection
-        components[i] = vector - projection
+    projections = coefficients[:, np.newaxis] * matrix
+    components = vector - projections
 
     return projections, components

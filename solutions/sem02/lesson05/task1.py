@@ -1,7 +1,6 @@
 import numpy as np
 
 
-# можно чутчут баллов пожалст((
 class ShapeMismatchError(Exception):
     pass
 

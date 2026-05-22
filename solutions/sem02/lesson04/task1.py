@@ -1,23 +1,15 @@
 import numpy as np
 
 
-# можно чутчут баллов пожалст((
 def pad_image(image: np.ndarray, pad_size: int) -> np.ndarray:
     if pad_size < 1:
         raise ValueError
 
-    if image.ndim == 2:
-        height, width = image.shape
-        new_height = height + 2 * pad_size
-        new_width = width + 2 * pad_size
-        padded = np.zeros((new_height, new_width), dtype=image.dtype)
-        padded[pad_size : pad_size + height, pad_size : pad_size + width] = image
-    else:
-        height, width, channels = image.shape
-        new_height = height + 2 * pad_size
-        new_width = width + 2 * pad_size
-        padded = np.zeros((new_height, new_width, channels), dtype=image.dtype)
-        padded[pad_size : pad_size + height, pad_size : pad_size + width, :] = image
+    height, width = image.shape[:2]
+    new_shape = (height + 2 * pad_size, width + 2 * pad_size) + image.shape[2:]
+
+    padded = np.zeros(new_shape, dtype=image.dtype)
+    padded[pad_size:pad_size + height, pad_size:pad_size + width] = image
 
     return padded
 
@@ -29,25 +21,22 @@ def blur_image(
     if kernel_size < 1 or kernel_size % 2 == 0:
         raise ValueError
 
+    if kernel_size == 1:
+        return image.copy()
+
     pad_size = kernel_size // 2
     padded = pad_image(image, pad_size)
 
-    result = np.zeros(image.shape, dtype=image.dtype)
+    height, width = image.shape[:2]
+    accumulator = np.zeros(image.shape, dtype=np.float64)
 
-    if image.ndim == 2:
-        height, width = image.shape
-        for i in range(height):
-            for j in range(width):
-                window = padded[i : i + kernel_size, j : j + kernel_size]
-                result[i, j] = np.mean(window)
-    else:
-        height, width, channels = image.shape
-        for i in range(height):
-            for j in range(width):
-                window = padded[i : i + kernel_size, j : j + kernel_size, :]
-                result[i, j, :] = np.mean(window, axis=(0, 1))
+    for di in range(kernel_size):
+        for dj in range(kernel_size):
+            accumulator += padded[di:di + height, dj:dj + width]
 
-    return result
+    result = accumulator / (kernel_size ** 2)
+
+    return result.astype(image.dtype)
 
 
 if __name__ == "__main__":
